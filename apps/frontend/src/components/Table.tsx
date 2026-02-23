@@ -1,8 +1,6 @@
 "use client";
 
-import useDataTable from "@/hooks/useDataTable";
-import { TableExpanse } from "@/types/table";
-import { ColumnFiltersState,
+import { AccessorKeyColumnDef, ColumnFiltersState,
   createColumnHelper, 
   flexRender, 
   getCoreRowModel, 
@@ -13,27 +11,12 @@ import { ColumnFiltersState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
-const columnTemplate = [
-    {id: 'account', header: 'Аккаунт'},
-    {id: 'category', header: 'Категория'},
-    {id: 'amount', header: 'Сумма'},
-    {id: 'type', header: 'Тип'},
-] as const satisfies { id: keyof TableExpanse; header: string }[];
+type Props = {
+  columns: AccessorKeyColumnDef<any, string>[];
+  data: unknown[];
+}
 
-const columnHelper = createColumnHelper<TableExpanse>()
-
-const columns = columnTemplate.map((column) => {
-    return columnHelper.accessor(column.id, {
-        header: column.header,
-        size: 200,
-        meta: {
-          filterVariant: 'select',
-        },
-    })
-});
-
-export default function Table() {
-  const { data, isLoading, error } = useDataTable();
+export default function Table({columns, data}: Props) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     [],
   );
@@ -55,10 +38,7 @@ export default function Table() {
       getPaginationRowModel: getPaginationRowModel(),
       onPaginationChange: setPagination,
       onColumnFiltersChange: setColumnFilters,
-    })
-
-  if(isLoading) return 'Loading...';
-  if(error) return 'Error...';
+  });
 
   return (
     <div className="p-2">
