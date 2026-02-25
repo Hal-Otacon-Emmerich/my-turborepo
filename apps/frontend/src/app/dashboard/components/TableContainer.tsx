@@ -26,11 +26,10 @@ const columns = columnTemplate.map((column) => {
 });
 
 export default function TableContainer() {
-    const { data, isLoading, error } = useDataTable();
+    const { data, isLoading, isError } = useDataTable();
 
     if(isLoading) return <Card className="col-span-3">Loading...</Card>
-    if(error) return <Card className="col-span-3">Error...</Card>
-
+    if(isError) return <Card className="col-span-3">Error...</Card>
 
     return (
         <Card className="col-span-3">

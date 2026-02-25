@@ -6,10 +6,10 @@ import useLineChart from "@/hooks/useLineChart";
 import { Area, AreaChart, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function LineChart() {
- const {data, isLoading, error} = useLineChart();
+ const {data, isLoading, isError} = useLineChart();
  
      if(isLoading) return <Card>Loading</Card>
-     if(error) return <div>Ошибка</div>
+     if(isError) return <div>Ошибка</div>
 
   return (
         <ResponsiveContainer width="100%" maxHeight={300} aspect={1.618}>

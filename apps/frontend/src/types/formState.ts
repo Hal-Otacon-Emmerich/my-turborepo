@@ -8,3 +8,9 @@ export type FormState =
       message?: string
     }
   | undefined
+
+
+export type Message = {
+    message: string
+    status: 'success' | 'error'
+}

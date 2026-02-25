@@ -4,10 +4,10 @@ import useBarChart from "@/hooks/useBarChart";
 import { Bar, BarChart as BarRechart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function BarChart() {    
-    const {data, isLoading, error} = useBarChart();
+    const {data, isLoading, isError} = useBarChart();
 
     if(isLoading) return "Loading...";
-    if(error) return "Error..." 
+    if(isError) return "Error..." 
 
     return (
         <ResponsiveContainer width="100%" maxHeight={500} aspect={1.618}>

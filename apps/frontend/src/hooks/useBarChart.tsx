@@ -1,32 +1,26 @@
-import { mergeTransactionsByType, transformArrayForBarChart } from "@/lib/mergeTransactionsArrays";
-import { FormatedAreaChartData, FormatedBarChartData, LineChartData } from "@/types/charts";
-import { Transactions } from "@/types/db";
+import { getAllTransactions } from "@/api/api";
+import { transformArrayForBarChart } from "@/lib/mergeTransactionsArrays";
+import { FormatedBarChartData } from "@/types/charts";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export default function useBarChart() {
-    const [data, setData] = useState<FormatedBarChartData[]>();
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<unknown>('');
+    const [data, setBarData] = useState<FormatedBarChartData[]>([]);
+    const transactions = useQuery({
+        queryKey: ['transactions'],
+        queryFn: getAllTransactions
+    });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const transactionsRes = await fetch(`http://localhost:8080/transactions/all`)
-
-                const transactionsData: Transactions[] = await transactionsRes.json();
-                
-                const transactions = transformArrayForBarChart(transactionsData)
-
-                setData(transactions);
-            } catch (error) {
-                console.log(error)
-                setError('Что-то пошло не так...')
-            } finally {
-                setIsLoading(false)
-            }
+        if(transactions.data) {
+            const barChartData = transformArrayForBarChart(transactions.data)
+            setBarData(barChartData);
         }
-        fetchData();
-    }, [])
+    }, [transactions.data]);
 
-    return {data, isLoading, error}
+    return {
+        data,
+        isLoading: transactions.isLoading,
+        isError: transactions.isError,
+    }
 }

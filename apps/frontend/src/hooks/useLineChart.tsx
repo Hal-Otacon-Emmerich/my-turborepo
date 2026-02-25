@@ -1,32 +1,23 @@
+import { getAllTransactions } from "@/api/api";
 import { mergeTransactionsByType } from "@/lib/mergeTransactionsArrays";
-import { FormatedAreaChartData, LineChartData } from "@/types/charts";
-import { Transactions } from "@/types/db";
+import { FormatedAreaChartData } from "@/types/charts";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export default function useLineChart() {
-    const [data, setData] = useState<FormatedAreaChartData[]>();
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<unknown>('');
+    const {data, isLoading, isError} = useQuery({
+        queryKey: ['transactions'],
+        queryFn: getAllTransactions
+    });
+    const [LineData, setData] = useState<FormatedAreaChartData[]>();
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const transactionsRes = await fetch(`http://localhost:8080/transactions/all`)
-
-                const transactionsData: Transactions[] = await transactionsRes.json();
-                
-                const transactions = mergeTransactionsByType(transactionsData)
-
-
-                setData(transactions);
-            } catch (error) {
-                setError('Что-то пошло не так...')
-            } finally {
-                setIsLoading(false)
-            }
+        if(data) {
+            const mergedTransactions = mergeTransactionsByType(data)
+            setData(mergedTransactions)
         }
-        fetchData();
-    }, [])
 
-    return {data, isLoading, error}
+    }, [data])
+
+    return { data: LineData, isLoading, isError }
 }

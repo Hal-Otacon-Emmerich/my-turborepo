@@ -10,7 +10,7 @@ import ModalSettings from "../modal/ModalSettings";
 import RenderActiveShape from "@/components/PieActiveShape";
 
 export default function PieChart () {
-    const {data, isLoading, error} = usePieChart();
+    const {data, transactions, categories} = usePieChart();
     const [showModal, setShowModal] = useState(false);
     const [categoryData, setCategoryData] = useState({name: '', color: '', id: 0})
     const [menuVisible, setMenuVisible] = useState(false);
@@ -33,8 +33,8 @@ export default function PieChart () {
         setCategoryData({name: e.name, color: e.fill, id: e.id})
     }
 
-    if(isLoading) return <Card>Loading...</Card>
-    if(error) return <div>Ошибка</div>
+    if(transactions.isLoading || categories.isLoading) return <Card>Loading...</Card>
+    if(transactions.isError || categories.isError) return <div>Ошибка</div>
 
     return (
             <>
